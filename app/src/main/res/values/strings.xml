@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">sample-retrofit</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    
+    <string name="todo_login_text">Login</string>
+    <string name="todo_login_btn">LOGIN</string>
+    <string name="todo_login_username_text">Username</string>
+    <string name="todo_login_password_text">Password</string>
+    <string name="todo_app_name_text">Todo App</string>
+    <string name="todo_app_welcome_text">Selamat datang</string>
+    <string name="todo_app_display_username_text">Admin</string>
+    <string name="todo_app_display_title_text">What to do today ?</string>
+    <string name="todo_app_save_btn">SAVE</string>
+    <string name="todo_app_footer_text">Todo App by Enigma</string>
 </resources>
