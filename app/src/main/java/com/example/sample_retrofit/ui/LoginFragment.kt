@@ -6,6 +6,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
+import androidx.navigation.fragment.findNavController
+import com.example.sample_retrofit.R
 import com.example.sample_retrofit.data.config.ApiClient
 import com.example.sample_retrofit.data.api.response.LoginResponse
 import com.example.sample_retrofit.data.model.LoginModel
@@ -44,7 +47,8 @@ class LoginFragment : Fragment() {
                 apiClient
                     .getApiService(requireContext())
                     .login(
-                        LoginModel(teUsername.text.toString(), tePassword.text.toString()))
+                        LoginModel(teUsername.text.toString(), tePassword.text.toString())
+                    )
                     .enqueue(object : Callback<LoginResponse> {
 
                         override fun onResponse(
@@ -52,25 +56,32 @@ class LoginFragment : Fragment() {
                             response: Response<LoginResponse>
                         ) {
                             val loginResponse = response.body()
-                            Log.i("TODOS", "loginResponse: ${loginResponse.toString()}")
-//                            if (loginResponse != null) {
-//                                Log.i("TODOS", loginResponse.token.token)
-//                                sessionManager
-//                                    .saveAuthToken(
-//                                        loginResponse.token.token,
-//                                        teUsername.text.toString()
-//                                    )
-//                            }
+                            if (loginResponse != null) {
+                                Log.i("TODOS", loginResponse.token)
+                                sessionManager
+                                    .saveAuthToken(
+                                        loginResponse.token,
+                                        teUsername.text.toString()
+                                    )
+                                findNavController().navigate(R.id.action_loginFragment_to_todoFragment)
+                            } else {
+                                showErrorDialog()
+                            }
                         }
 
                         override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
                             Log.i("TODOS", "Login failure ${t.localizedMessage}")
                         }
-
                     })
-//                findNavController().navigate(R.id.action_loginFragment_to_todoFragment)
             }
         }
     }
 
+    private fun showErrorDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Login Failed")
+            .setMessage("Username or password is not correct. Please try again.")
+            .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
+            .show()
+    }
 }
