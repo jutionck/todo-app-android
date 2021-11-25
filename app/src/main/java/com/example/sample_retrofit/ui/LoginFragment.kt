@@ -58,7 +58,6 @@ class LoginFragment : Fragment() {
                             if (loginResponse != null) {
                                 Log.i("TODOS", loginResponse.token)
                                 sessionManager.saveAuthToken(loginResponse.token, teUsername.text.toString())
-                                Log.i("TODOS", "isLoggedIn ${sessionManager.isLoggedIn()}")
                                 sessionManager.setLoggedIn(true)
                                 if (sessionManager.isLoggedIn()) {
                                     performLogin()

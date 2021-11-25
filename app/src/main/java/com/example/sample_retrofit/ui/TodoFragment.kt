@@ -6,11 +6,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.sample_retrofit.R
+import com.example.sample_retrofit.data.adapter.TodoAdapter
+import com.example.sample_retrofit.data.api.request.TodoRequestUpdate
 import com.example.sample_retrofit.data.api.response.TodoResponse
 import com.example.sample_retrofit.data.config.ApiClient
 import com.example.sample_retrofit.data.model.TodoModel
+import com.example.sample_retrofit.data.viewmodel.TodoViewModel
 import com.example.sample_retrofit.databinding.FragmentTodoBinding
 import com.example.sample_retrofit.utils.SessionManager
 import com.google.gson.Gson
@@ -21,8 +26,9 @@ import retrofit2.Response
 class TodoFragment : Fragment() {
 
     private lateinit var binding: FragmentTodoBinding
-    private lateinit var apiClient: ApiClient
     private lateinit var sessionManager: SessionManager
+    private lateinit var todoViewModel: TodoViewModel
+    private lateinit var todoAdapter: TodoAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +36,7 @@ class TodoFragment : Fragment() {
         if (!sessionManager.isLoggedIn()) {
             findNavController().navigate(R.id.action_todoFragment_to_loginFragment)
         }
+        todoViewModel = ViewModelProvider(requireActivity())[TodoViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -43,7 +50,7 @@ class TodoFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        apiClient = ApiClient()
+
         binding.apply {
             btnAddTodo.setOnClickListener {
                 findNavController().navigate(R.id.action_todoFragment_to_todoFormFragment)
@@ -55,29 +62,21 @@ class TodoFragment : Fragment() {
                 findNavController().navigate(R.id.action_todoFragment_to_loginFragment)
             }
         }
+        todoViewModel.getAllTodo()
+        subscribe()
         getNameFromLogin()
-        loadDataTodo()
     }
 
-    private fun loadDataTodo() {
-        apiClient.getApiService(requireContext()).getTodos()
-            .enqueue(object : Callback<List<TodoResponse>> {
-                override fun onResponse(
-                    call: Call<List<TodoResponse>>,
-                    response: Response<List<TodoResponse>>
-                ) {
-                    val responses = response.body()
-                    if (responses != null) {
-                        val gson = Gson()
-                        val todos = gson.fromJson(gson.toJson(responses), Array<TodoModel>::class.java).toList()
-                        Log.i("TODOS", "loadDataTodo: $todos")
-                    }
+    private fun subscribe() {
+        todoViewModel.todoListLiveData.observe(viewLifecycleOwner, {
+            todoAdapter = TodoAdapter(it)
+            binding.apply {
+                todoRecyclerView.apply {
+                    layoutManager = LinearLayoutManager(requireContext())
+                    adapter = todoAdapter
                 }
-
-                override fun onFailure(call: Call<List<TodoResponse>>, t: Throwable) {
-                    Log.i("TODOS", "Login failure ${t.localizedMessage}")
-                }
-            })
+            }
+        })
     }
 
     private fun getNameFromLogin() {

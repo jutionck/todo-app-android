@@ -5,7 +5,7 @@
       <map>
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.28229166666666666" />
         <entry key="app/src/main/res/layout/fragment_login.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/fragment_todo.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/fragment_todo.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_todo_form.xml" value="0.28229166666666666" />
         <entry key="app/src/main/res/layout/todo_layout.xml" value="0.28229166666666666" />
       </map>
