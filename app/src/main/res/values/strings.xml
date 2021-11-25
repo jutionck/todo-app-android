@@ -13,4 +13,10 @@
     <string name="todo_app_display_title_text">What to do today ?</string>
     <string name="todo_app_save_btn">SAVE</string>
     <string name="todo_app_footer_text">Todo App by Enigma</string>
+    <string name="delete_icon_todo">Delete Icon Todo</string>
+    <string name="edit_icon_todo" />
+    <string name="image_icon_logout">Image Icon Logout</string>
+    <string name="icon_add_todo">Icon Add Todo</string>
+    <string name="icon_todo_back">Icon Todo Back</string>
+    <string name="todo">Todo</string>
 </resources>
