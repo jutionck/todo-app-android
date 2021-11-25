@@ -21,12 +21,12 @@ import retrofit2.Response
 class LoginFragment : Fragment() {
 
     private lateinit var binding: FragmentLoginBinding
-
     private lateinit var sessionManager: SessionManager
     private lateinit var apiClient: ApiClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        sessionManager = SessionManager(requireContext())
     }
 
     override fun onCreateView(
@@ -41,7 +41,6 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         apiClient = ApiClient()
-        sessionManager = SessionManager(requireContext())
         binding.apply {
             btnLogin.setOnClickListener {
                 apiClient
@@ -58,12 +57,13 @@ class LoginFragment : Fragment() {
                             val loginResponse = response.body()
                             if (loginResponse != null) {
                                 Log.i("TODOS", loginResponse.token)
-                                sessionManager
-                                    .saveAuthToken(
-                                        loginResponse.token,
-                                        teUsername.text.toString()
-                                    )
-                                findNavController().navigate(R.id.action_loginFragment_to_todoFragment)
+                                sessionManager.saveAuthToken(loginResponse.token, teUsername.text.toString())
+                                Log.i("TODOS", "isLoggedIn ${sessionManager.isLoggedIn()}")
+                                sessionManager.setLoggedIn(true)
+                                if (sessionManager.isLoggedIn()) {
+                                    performLogin()
+                                    findNavController().navigate(R.id.action_loginFragment_to_todoFragment)
+                                }
                             } else {
                                 showErrorDialog()
                             }
@@ -83,5 +83,19 @@ class LoginFragment : Fragment() {
             .setMessage("Username or password is not correct. Please try again.")
             .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
             .show()
+    }
+
+    private fun performLogin() {
+        binding.teUsername.isEnabled = false
+        binding.tePassword.isEnabled = false
+        binding.btnLogin.visibility = View.INVISIBLE
+    }
+
+    private fun isLoggedIn() {
+        if (sessionManager.isLoggedIn()) {
+            findNavController().navigate(R.id.action_loginFragment_to_todoFragment)
+        } else {
+            findNavController().navigate(R.id.action_todoFragment_to_loginFragment)
+        }
     }
 }

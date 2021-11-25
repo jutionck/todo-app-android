@@ -15,7 +15,7 @@ interface ApiService {
     fun login(@Body request: LoginModel): Call<LoginResponse>
 
     @GET(Constants.TODOS_URL)
-    fun getTodos(): Call<TodoResponse>
+    fun getTodos(): Call<List<TodoResponse>>
 
     // other api service
 }

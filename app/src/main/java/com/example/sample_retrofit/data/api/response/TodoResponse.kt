@@ -1,7 +1,10 @@
 package com.example.sample_retrofit.data.api.response
 
-import com.example.sample_retrofit.data.model.TodoModel
+import com.google.gson.annotations.SerializedName
 
 data class TodoResponse(
-    val todos: List<TodoModel>
+
+    @SerializedName("name")
+    var todoName: String,
+    var isDone: Boolean
 )

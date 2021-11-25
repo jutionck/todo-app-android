@@ -11,11 +11,9 @@ class SessionManager (context: Context) {
     companion object {
         const val TOKEN = "token"
         const val USERNAME = "username"
+        const val IS_LOGGED_IN = "is_logged_in"
     }
 
-    /**
-     * Function to save auth token and username
-     */
     fun saveAuthToken(token: String, username: String) {
         val editor = prefs.edit()
         editor.putString(TOKEN, token)
@@ -23,17 +21,21 @@ class SessionManager (context: Context) {
         editor.apply()
     }
 
-    /**
-     * Function to fetch auth token
-     */
     fun fetchAuthToken(): String? {
         return prefs.getString(TOKEN, null)
     }
 
-    /**
-     * Function to fetch auth username
-     */
     fun fetchAuthUsername(): String? {
         return prefs.getString(USERNAME, null)
+    }
+
+    fun isLoggedIn(): Boolean = prefs.getBoolean(IS_LOGGED_IN, false)
+
+    fun setLoggedIn(loggedIn: Boolean) {
+        prefs.edit().putBoolean(IS_LOGGED_IN, loggedIn).apply()
+    }
+
+    fun clearPref() {
+        prefs.edit().clear().apply()
     }
 }
