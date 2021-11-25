@@ -69,7 +69,7 @@ class TodoFragment : Fragment() {
 
     private fun subscribe() {
         todoViewModel.todoListLiveData.observe(viewLifecycleOwner, {
-            todoAdapter = TodoAdapter(it)
+            todoAdapter = TodoAdapter(it, todoViewModel)
             binding.apply {
                 todoRecyclerView.apply {
                     layoutManager = LinearLayoutManager(requireContext())

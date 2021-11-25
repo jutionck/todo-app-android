@@ -4,8 +4,10 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sample_retrofit.data.model.TodoModel
 import com.example.sample_retrofit.databinding.TodoLayoutBinding
+import okhttp3.internal.notify
+import okhttp3.internal.notifyAll
 
-class TodoViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+class TodoViewHolder(itemView: View, private val listener: TodoListener): RecyclerView.ViewHolder(itemView) {
 
     private val binding = TodoLayoutBinding.bind(itemView)
 
@@ -14,7 +16,7 @@ class TodoViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
             tvTodoName.text = todo.name
             checkbox.isChecked = todo.isDone
             btnDeleteTodo.setOnClickListener {
-                // TODO DELETE
+                listener.onDelete(todo)
             }
         }
     }

@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.sample_retrofit.data.adapter.TodoListener
 import com.example.sample_retrofit.data.api.request.TodoRequest
 import com.example.sample_retrofit.data.api.response.TodoResponse
 import com.example.sample_retrofit.data.config.ApiClient
@@ -18,7 +19,7 @@ import retrofit2.Response
 
 class TodoViewModel(
     application: Application
-) : AndroidViewModel(application) {
+) : AndroidViewModel(application), TodoListener {
 
     private lateinit var todoRepository: TodoRepository
 
@@ -73,5 +74,39 @@ class TodoViewModel(
 
             })
 
+    }
+
+    override fun onDelete(todo: TodoModel) {
+        Log.i("TODOS", "ID: ${todo.id}")
+        apiClient.getApiService(context).deleteTodo(todo.id).enqueue(object : Callback<Unit> {
+            override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
+                getAllTodo()
+            }
+
+            override fun onFailure(call: Call<Unit>, t: Throwable) {
+                Log.i("TODOS", "onDelete failure ${t.printStackTrace()}")
+            }
+
+        })
+    }
+
+    private fun getTodoById(id: Int) {
+        apiClient.getApiService(context).getTodoById(id).enqueue(object : Callback<TodoResponse> {
+            override fun onResponse(call: Call<TodoResponse>, response: Response<TodoResponse>) {
+                val responses = response.body()
+                if (responses != null) {
+                    val gson = Gson()
+                    _todoLiveData.value =
+                        gson.fromJson(gson.toJson(responses), TodoModel::class.java)
+                    Log.i("TODOS", "getTodoById(): ${_todoLiveData.value}")
+                }
+            }
+
+            override fun onFailure(call: Call<TodoResponse>, t: Throwable) {
+                Log.i("TODOS", "getTodoById failure ${t.printStackTrace()}")
+
+            }
+
+        })
     }
 }
